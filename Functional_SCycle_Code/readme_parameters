@@ -1,0 +1,92 @@
+README for the P Cycling model parameter dependence (by Rafael Rianço Silva)
+
+In order to obtain the p-dependence for the Reservoirs (plotting a reservoir's content as a function of a gaochemical parameter)
+
+0 - Adapt the paths to your own device, on the files "run_multi_config.py", and make sure the following line is commented out
+
+	PARSER.add_argument('-f', '--folder', default='/home/.../P-Cycle-main-sed/seedings_files') 
+
+        while the following line is uncommented:
+  	
+  	PARSER.add_argument('-f', '--folder', default='/home/.../P-Cycle-main-sed/parameters_files') #Don't forget to add this here!
+  	
+       this activates the parameter dependence mode. Uncomment/Comment back to return to seedings mode
+
+1 - Open parameters.py and choose the geophyisical/geochemical process and its parameter we intend to vary (check what they are at      		new_config.yaml). As a starting point, try "Erosion" as a process and "alpha" (Erosion rate, in m/yr units) as the paramater to 		vary;
+
+	Provide also the minimum and maximum values for this parameter to be sweeped between, and whether this sweeping is logarithmic   		(log': True,) or linear (log': False,). For Erosion alpha, try log sweep and vmin = 1e-5 and vmax = 1e-2;
+	
+	Confirm if the other parameter values in new_config.yaml are those you intend to use, since other than the sweeped param, all 	   other param values will remain constant along the simulation.
+	 
+	On the previous param sweeping plots (see paper's suplementary info) we plotted reservoir content as a function of a given        	 parameter FOR SEVERAL VALUES OF ANOTHER PARAMETER. E.g., on Suplementary Info's SI.5, plot f, we plot the mass value of the P 		content on Marine Sediments Reservoir as a function of the varied Erosion alpha parameter -> FOR 3 DIFFERENT VALUES OF SUBDUCTION 	RATE TIMESCALES. This allows to compare the interdependence of Reservoir content as a function of 2 parameters. Start with, say, 		subduction tau (subduction rate timescale) = 100e6 (= 100 Myr).
+	
+	This means that you may have to modify the 2nd parameter's values on new_config.yaml between different simulations (when, in     		each simulation, one varies only the parameter dependence, and then you combine several simulation curves on a plot such as	SI5.f ). In this case, we will call the sweeped parameter the 1st parameter - here, the Erosion Alpha - and the discretely varied parameter (corresponding to the several simulations) the 2nd parameter - here, the subduction tau. 
+
+2 - Open terminal on main and type "make parameters"   
+
+	-> this will create the directory "parameters_files" and its subfile "Results"; 
+	-> Then runs "parameters.py" and redirects the generated config files into the parameters_file directory
+	-> Creates an evolve file
+	-> runs "run_multi_config.py" which runs simulations for all the config-files (directed into the "output" directory)
+
+3 - Open terminal on "output" and copy the matrix-files, results of the simulations, into the "/parameters_files/Results" directory, by typing 
+
+	$ cp *.yaml /home/.../P-Cycle-main/parameters_files/Results 
+	$ cp *.txt /home/.../P-Cycle-main/parameters_files/Results
+	
+	(remember to adapt the paths)
+	
+and then remove the now superfluous material on the output directory, by
+
+	$ rm *.yaml
+	$ rm *.txt
+	$ rm *.dot
+	$ cd ..	
+	
+4 - Manually rename the "results" file to "subrate-100", or according to the second parameter's value, and move it to the main folder (/P-Cycle-main). This nomenclature is due to the way the plot producing file, (generate_pdependence.py), interprets the files.
+
+5 - Repeat all the steps above for different subduction rates values on new_config.yaml (say, subduction tau = 50 Myr or subduction tau = 150 Myr), thus producing "subrate-050" and "subrate-150" files.
+
+6 - Open "generate_pdependence.py"; On the "PROPERTIES" section, you will find the python dictionary defining the different kinds of pdependence plots you want - which are associated with a given label. Comment out all proprieties's entries EXCEPT for the one you intend to plot. For the 1st parameter as Erosion alpha and 2nd parameter as subduction taus, it is the 1st set of entries. You may add other entries (eg. if you also want to plot previously simulated subduction rates = 200 Myr).
+
+7 - On "generate_pdependence.py" look for the line of code with the following comment: "### CRUCIAL: TO CHANGE THE PARAMETER IN STUDY HERE!", and adapt it to the pdependence Process and Parameter you are using (E.g. ['Erosion']['alpha'] )
+
+	Adapt as well the following lines:
+	
+	plt.xscale('log')
+	
+	plt.axvline(4.6, ls='--', lw=2, color='black')
+	plt.axhline(1, ls ='--', lw=1, color= 'black')
+	plt.xlim([1, 10])
+	
+	labelLines(plt.gca().get_lines(), xvals=[5e-4, 6, 8], legend=ARGS.legend, zorder=2.5)
+
+	
+	The 1st one allows for the x axis of the plot to be displayed in a log way. Comment or Uncomment accordingly to the simulation 		sweeping log status (True or False on point 1).
+	
+	The 2nd one produces a vertical dashed line on the plot, coincident with the estimated real value for the sweeped parameter on 		Present-Day Earth (will be of 2e-4 for Erosion Alpha)
+	
+	The 3rd one produces a horizontal dashed line on the plot, coincident with the estimated real value for the Studied reservior 		content on present-day Earth. Values are normalized by a factor of Present Earth Levels, PEL, so this value should be 1. 
+	
+	The 4th one correspnds to the limits of the plot's x axis - ajust according to the simulation range (for Erosion Alpha, from     		1e-5 to 1e-2)
+	
+	The 5th line corresponds to the position of the curve labels, that should be placed within the plot x axis range (in this case, 		the 1st label will be placed at the x = 5e-4 position)
+	
+8 - Create the plot by runing the .py file "generate_pdependence.py", by typing on the terminal on the main folder
+
+	$ python3 generate_pdependence.py -f subrate-050/ -f subrate-100/ -f subrate-150/ -l '50 Ma' -l '100 Ma' -l '150 Ma'  -c UMantle0 	-o  SI15_a).png -n '(a)'
+
+	-> -f commands chooses the simulation folders with the simulation results you intend to plot. Each p-sweeping simulation will 		correspond to one curve on the plot 
+	
+	-> -l command chooses the label associated with each of the simulation curves - associated with the parameter that is 			characteristic to them.
+	
+	-> -c command chooses the Reservoir you intend to study, (LMantle0, UMantle0, OCrust0, CCrust0, Sediments0, Oceans0, Atmosphere0)
+	
+	-> -o command chooses the .png name of the output plot file
+	
+	-> -n command chooses the plot label
+	
+------> If it runs smoothly, the plot should appear on the main directory
+
+As an Exercise: Try replicating the SI5 d, e, f plots from our Paper's Suplementary Info!
+

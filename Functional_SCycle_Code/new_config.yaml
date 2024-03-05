@@ -1,0 +1,110 @@
+{
+    Species: ["s_red", "s_ox"], # Standard Starting Configuration: Atm: 3.6e10; Oce: 3e18; OC: 7e18; CC: 150; Sed: 150; UM: 6.2e20; LM: 18.7e20; TBC = To be changed
+    Reservoirs: {
+        Atmosphere: {
+            InitMasses: {
+            s_red: 0,
+            s_ox: 3.6e10,
+            }, 
+        },
+        Oceans: {
+            InitMasses: {
+            s_red: 1.5e18,
+            s_ox: 1.6e18,
+            },
+        },
+        OCrust: {
+            InitMasses: {
+            s_red: 3.5e18,
+            s_ox: 3.6e18,
+            },
+        },
+        Sediments: {
+            InitMasses: {
+            s_red: 1e2,
+            s_ox: 2e2,
+            },
+        },
+        UMantle: {
+            InitMasses: {
+            s_red: 6.0e20,
+            s_ox: 0,
+            },
+        },
+        LMantle: {
+            InitMasses: {
+            s_red: 18.7e20,
+            s_ox: 0,
+            },
+        },
+        CCrust: {
+            InitMasses: {
+            s_red: 1e2,
+            s_ox: 2e2,
+            },
+        },
+   },
+   
+   Processes:
+    ["Erosion", "Precipitation","CometDelivery","Convection","HydrothermalCirculation", "Subduction_Volcanism_Rainout"],
+   
+   Erosion: {uniform_growth: false,  #true for exponential decay in growth or false for branches
+   alpha: 2e-4, #2.2e-4, # m of rock . yr-1
+   GOE: false, #True for POST-GOE, False for PRE-GOE
+   epsilon_red: 0.0001, #fraction of remaining sulfide after erosion
+   Ocean_function: 0, #2, # ocean function: 0 for normal, 1 for sinusoidal, 2 for exponential decay
+   a_term: 0.3, #if 1, 0.3, for sinusoidal perturbations, a accounts for relative sine amplitude, from 0 for non perturbation, to 1 (maximum); if 2, 2e9 for exponential decay, a accounts for the planet era (time, in years) at which the exponential decay occurs
+   b_term: 2e7, #perturbation timescale for 1/(2*Pi) oscilation (#1) and decay timescale for (#2) - Total oscillation = 2*pi*B
+   }, #m/yr, riverine erosion rate
+
+   Precipitation: {sol_ox: 3e-2, #Molar (mol of Sox/liter), Mass maximum concentration of the ocean (to be varied)
+   sol_red: 1e-7, #Molar (mol of Sred/liter), Mass maximum concentration of the ocean (to be varied) TBC
+   VOcean: 1.35e21, #Liter, totel volume of the oceans
+   baryte_frac: 0.01,
+   },
+    
+   CometDelivery: {
+        tau: 0.15e9, #yr
+        F0: 2e5, #present-day flux, kg/yr value (well constrained)
+        F1: 2e8, # LHB rate, kg/yr (x1000 larger than F0, ???)
+    },
+   
+   HydrothermalCirculation: {
+        tau: 150e6, # Exp decay constant, yr
+        F0: 1e-7,   # Evolution of fraction of circulated ocean water, present-day
+        F1: 3e-7,   # Evolution of fraction of circulated ocean water, Early earth (from Laneuville et al)
+        F_s: 1,   # Fraction of circulated S that gets fixed on OC
+    },
+   
+   Convection: {
+        tau: 150e6,  # Exp decay constant, yr
+        F0: 1e-8,  # Evolution of fraction of circulated mantle (from Laneuville et al)
+        F1: 3e-8,  # Evolution of fraction of circulated mantle (from Laneuville et al)
+    },
+   
+   Subduction_Volcanism_Rainout: {
+        accretion: 0.05, #fraction of accreted sediments, constant over time? firstly at 30%
+        Arc_fraction: 0.2, #NEW, mass fraction of subducted material that ends up being excruted as Arc Volcanism, prev. 12%
+        Arc_outgas: 0.5, #NEW, mass fraction of the Arc Volcanism S that ends up being outgassed as SO2 into the atmosphere, originally at 80%
+        tau: 100e6, #100e6  #timescale of total surface recycling
+        S_Enrichment_Arc: 1.7, #Present-day ratio of S content in Arc Lavas vs Subducting OC slab
+        F_MORB: 20, #km³/yr, constant over time?
+        F_hotspot: 2.5, #km³/yr, constant over time?
+        Factor: 3, #factor of initial conditions (how many times more active the volcanism initially was)
+        Volcanic_tau: 150e6, # Exp decay constant, yr
+        density: 2800,
+        S_Conc_Ratio_MORB: 2,  #Present-day ratio of S content in MORB Lavas vs Upper Mantle
+        S_Conc_Ratio_HS: 2,  #Present-day ratio of S content in Hotspot Volcanism Lavas vs Lower Mantle
+        Volc_outgas: 0.2, # mass fraction of the MORB and Hotspot Volcanism S that ends up being outgassed as SO2 into the atmosphere
+        atm_timescale: 0.25, # atmospheric mean residence time of sulfur (in years!)
+    },
+
+
+    atm_ox: 0.2,
+    man_ox: 0.2,
+    OutFolder: "output",
+    Tmax: 4500e6,
+    Output: 10e6,
+    Timestep: 5e3,
+    Debug: False
+}
