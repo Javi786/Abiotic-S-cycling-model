@@ -1,0 +1,15 @@
+{CometDelivery: {F0: 2e5, F1: 2e8, tau: 0.15e9}, Convection: {F0: 1e-8, F1: 3e-8,
+    tau: 150e6}, Debug: false, Erosion: {GOE: false, Ocean_function: 0, a_term: 0.3,
+    alpha: '1.48e-04', b_term: 2e7, epsilon_red: 0.01, uniform_growth: false}, HydrothermalCirculation: {
+    F0: 1e-7, F1: 3e-7, F_s: 1, tau: 150e6}, OutFolder: output, Output: 10e6, Precipitation: {
+    VOcean: 1.35e21, baryte_frac: 0.01, sol_ox: 3e-2, sol_red: 1e-7}, Processes: [
+    Erosion, Precipitation, CometDelivery, Convection, HydrothermalCirculation, Subduction_Volcanism_Rainout],
+  Reservoirs: {Atmosphere: {InitMasses: {s_ox: 3.6e10, s_red: 0}}, CCrust: {InitMasses: {
+        s_ox: 2e2, s_red: 1e2}}, LMantle: {InitMasses: {s_ox: 0, s_red: 18.7e20}},
+    OCrust: {InitMasses: {s_ox: 3.6e18, s_red: 3.5e18}}, Oceans: {InitMasses: {s_ox: 1.6e18,
+        s_red: 1.5e18}}, Sediments: {InitMasses: {s_ox: 2e2, s_red: 1e2}}, UMantle: {
+      InitMasses: {s_ox: 0, s_red: 6.0e20}}}, Species: [s_red, s_ox], Subduction_Volcanism_Rainout: {
+    Arc_fraction: 0.2, Arc_outgas: 0.5, F_MORB: 20, F_hotspot: 2.5, Factor: 3, S_Conc_Ratio_HS: 2,
+    S_Conc_Ratio_MORB: 2, S_Enrichment_Arc: 1.7, Volc_outgas: 0.2, Volcanic_tau: 150e6,
+    accretion: 0.05, atm_timescale: 0.25, density: 2800, tau: 100e6}, Timestep: 5e3,
+  Tmax: 4500e6, atm_ox: 0.2, man_ox: 0.2}
